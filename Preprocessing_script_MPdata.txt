@@ -1,0 +1,5 @@
+#already removed nextera adapters and trimmed 10 bases off end of each read using cutadapt.  
+
+#code to run bbmap - filtering out possible contaminants.
+/home/ubuntu/HvGen/src/bbmap/bbsplit.sh in1=./HvGen3/HvINT_MP_cutadapt_out.1.fastq in2=./HvGen3/HvINT_MP_cutadapt_out.2.fastq ref=./HvGen/symbionts_and_contaminants/CimexLectularisWolbachia.fasta,./HvGen/symbionts_and_contaminants/DmelWolbachia.fasta,./HvGen/symbionts_and_contaminants/DsimWolbachia.fasta,./HvGen/symbionts_and_contaminants/PhiX.fasta,./HvGen/symbionts_and/contaminants/HzSNPV_genome.fasta,./HvGen/symbionts_and_contaminants/HvAscoVirus_genome.fa,./HvGen/symbionts_and_contaminants/partial_Hv_mtDNA.fasta basename=./HvGen3/out1_%.fq outu1=./HvGen3/MP_Run1Forward.clean.fq outu2=./HvGen3/MP_Run1Reverse.clean.fq
+
