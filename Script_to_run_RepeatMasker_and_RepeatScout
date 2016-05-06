@@ -1,0 +1,98 @@
+This is the script I used to run RepeatScout and RepeatMasker on my genome assemblies
+
+GenomeDir="asm_1.25.16_47" #This had to be changed for each genome that I used.
+GenomeName="Stripped_K47_over2000bp.fasta" #This had to be changed for each genome that I used.
+
+
+cd /media/My\ Book/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatMasker_output_Insecta
+
+#output directories
+mkdir bacterial-contam general general+species-specific simple-only species-specific
+
+cd ~/temp
+
+#generating softlink to genome assembly
+ln -s /media/My\ Book/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/$GenomeName
+
+#first running RepeatScout v. 1.05 to get species-specific repeats
+
+#Build a frequency table of all repeats in the genome
+#using the default value of l as calculated by the software according to the readme file.
+/home/megan/src/RepeatScout-1/build_lmer_table -sequence $GenomeName -freq $GenomeName.freq
+
+#Extend repeats until they diverge and get a copy of all repeat sequences in the genome.
+/home/megan/src/RepeatScout-1/RepeatScout -sequence $GenomeName -output $GenomeName.Repeats -freq $GenomeName.freq
+
+#Filter out low-complexity or tandem repeats.
+cat $GenomeName.Repeats | /home/megan/src/RepeatScout-1/filter-stage-1.prl > $GenomeName.Repeats.filtered_stg1
+
+perl /usr/local/RepeatMasker/RepeatMasker -pa 10 -s -lib $GenomeName.Repeats.filtered_stg1 $GenomeName
+
+cat $GenomeName.Repeats.filtered_stg1 | /home/megan/src/RepeatScout-1/filter-stage-2.prl --cat=$GenomeName.out --thresh=10 > $GenomeName.Repeats.filtered_stg2_thresh10
+
+cp ./* /media/My\ Book/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatScout_output
+
+
+##Now running RepeatMasker using both Repbase "insecta" database and RepeatScout output.
+
+#species-specific
+
+perl /usr/local/RepeatMasker/RepeatMasker -pa 10 -s -lib $GenomeName.Repeats.filtered_stg2_thresh10 -nolow -norna -no_is -gff $GenomeName
+
+#moving output files from RM to RepeatMasker_output_Insecta directory
+
+cp ./{$GenomeName.out,$GenomeName.masked,$GenomeName.cat.gz,$GenomeName.out.gff,$GenomeName.tbl} /media/'My Book'/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatMasker_output_Insecta/species-specific
+
+#removed all but soft-linked genome from the temp directory
+find . ! -name '$GenomeName' -type f -exec rm -f {} +
+
+#bacterial insertion check
+perl /usr/local/RepeatMasker/RepeatMasker -s -excln -pa 10 -gff -xsmall -gccalc -frag 4000000 -e ncbi -species insecta -is_only $GenomeName
+
+cp ./$GenomeName.cat.gz /media/'My Book'/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatMasker_output_Insecta/bacterial-contam
+
+find . ! -name '$GenomeName' -type f -exec rm -f {} +
+
+#simple only
+perl /usr/local/RepeatMasker/RepeatMasker -s -excln -pa 10 -gff -xsmall -gccalc -frag 4000000 -e ncbi -species insecta -no_is -noint -norna $GenomeName
+
+cp ./{$GenomeName.out,$GenomeName.masked,$GenomeName.cat.gz,$GenomeName.out.gff,$GenomeName.tbl} /media/'My Book'/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatMasker_output_Insecta/simple-only
+
+find . ! -name '$GenomeName' -type f -exec rm -f {} +
+
+#general
+perl /usr/local/RepeatMasker/RepeatMasker -s -excln -pa 10 -gff -xsmall -gccalc -frag 4000000 -e ncbi -species insecta -no_is -nolow $GenomeName
+
+cp ./{$GenomeName.out,$GenomeName.masked,$GenomeName.cat.gz,$GenomeName.out.gff,$GenomeName.tbl} /media/'My Book'/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatMasker_output_Insecta/general
+
+find . ! -name '$GenomeName' -type f -exec rm -f {} +
+
+
+###using Bedtools to mask genome using  combined general & species-specific gff files.
+
+#concatenating gff files first.
+cd /media/My\ Book/Hv_Genome_seq/Experimental_assemblies/with_MatePairs/$GenomeDir/RepeatMasker_output_Insecta
+
+cat ./general/$GenomeName.out.gff | tail -n +4 > ./general_minus_first3.gff
+
+cat ./species-specific/$GenomeName.out.gff | tail -n +4 > ./species-specific_minus_first3.gff
+
+cat general_minus_first3.gff species-specific_minus_first3.gff > combined_general_and_HvSpecific2.gff
+
+cp ./combined_general_and_HvSpecific2.gff ~/temp
+
+#softmasking genome
+cd ~/temp
+
+cat combined_general_and_HvSpecific2.gff | bedtools sort > sorted_combined_general_and_HvSpecific3.gff
+
+bedtools maskfasta -fi $GenomeName -soft -bed sorted_combined_general_and_HvSpecific3.gff -fo masked_$GenomeName
+
+#bedtools introduces extra line endings into new fasta, so I then used my Line_stripper.sh script to remove them.  Now both the unmasked and masked genome have the same number of lines.
+
+Line_stripper.sh
+
+#hand copied (because I'm lazy) sorted combined .gff and newly masked genome to general+species-specific directory.
+
+#removing all files from temp to start again
+rm ./*

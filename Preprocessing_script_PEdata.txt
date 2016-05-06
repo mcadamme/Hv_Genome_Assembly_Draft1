@@ -1,0 +1,14 @@
+#code to run trimmomatic - clipping low quality regions off read ends
+java -jar ./Trimmomatic-0.32/trimmomatic-0.32.jar PE -phred33 ./GSL249_FG_HgvDNA_NoIndex_L002_R1_001.fastq.gz ./GSL249_FG_HgvDNA_NoIndex_L002_R2_001.fastq.gz ./trimmed/run1_forward_paired.fq.gz ./trimmed/run1_forward_unpaired.fq.gz ./trimmed/run2_reverse_paired.fq.gz ./trimmed/run2_reverse_unpaired.fq.gz ILLUMINACLIP:./Primers_and_adapters.fa:2:30:10:4:true SLIDINGWINDOW:4:15 MINLEN:36
+
+gunzip /home/ubuntu/HvGen2/run1_forward_paired.fq.gz
+gunzip /home/ubuntu/HvGen2/run1_reverse_paired.fq.gz
+
+#code to run bbmap - filtering out possible contaminants.
+/home/ubuntu/HvGen/src/bbmap/bbsplit.sh in1=./HvGen2/run1_forward_paired.fq in2=./HvGen2/run1_reverse_paired.fq ref=./HvGen/symbionts_and_contaminants/CimexLectularisWolbachia.fasta,./HvGen/symbionts_and_contaminants/DmelWolbachia.fasta,./HvGen/symbionts_and_contaminants/DsimWolbachia.fasta,./HvGen/symbionts_and_contaminants/PhiX.fasta,./HvGen/symbionts_and/contaminants/HzSNPV_genome.fasta,./HvGen/symbionts_and_contaminants/HvAscoVirus_genome.fa,./HvGen/symbionts_and_contaminants/partial_Hv_mtDNA.fasta basename=./HvGen2/out1_%.fq outu1=./HvGen2/Run1Forward.clean.fq outu2=./HvGen2/Run1Reverse.clean.fq
+
+#PhiX reads were ~1% of run1 reads
+#partial mtDNA reads from (>CONTIG30554|ref0010406|ref0013922_partial_Hv_mtDNA) made up ~1.6% of run1 reads.
+#Very few wolbachia reads...
+/home/ubuntu/HvGen/src/bbmap/bbsplit.sh in1=./HvGen2/run2_forward_paired.fq in2=./HvGen2/run2_reverse_paired.fq ref=./HvGen/symbionts_and_contaminants/CimexLectularisWolbachia.fasta,./HvGen/symbionts_and_contaminants/DmelWolbachia.fasta,./HvGen/symbionts_and_contaminants/DsimWolbachia.fasta,./HvGen/symbionts_and_contaminants/PhiX.fasta,./HvGen/symbionts_and_contaminants/HzSNPV_genome.fasta,./HvGen/symbionts_and_contaminants/HvAscoVirus_genome.fa,./HvGen/symbionts_and_contaminants/partial_Hv_mtDNA.fasta basename=./HvGen2/out2_%.fq outu1=./HvGen2/Run2Forward.clean.fq outu2=./HvGen2/Run2Reverse.clean.fq
+

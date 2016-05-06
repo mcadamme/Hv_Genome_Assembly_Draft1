@@ -1,0 +1,5 @@
+#cutadapt script to remove nextera transposase, trim based on quality, and remove 10 bases from the 3'end
+
+cd /media/'My Book'/Hv_Genome-seq/HiSeq_10Kb_MatePairs_Raw
+
+python /home/megan/src/cutadapt-1.9.1/cutadapt -a CTGTCTCTTATACACATCT -A CTGTCTCTTATACACATCT -o HvINT_MP_cutadapt_out.1.fastq -p HvINT_MP_cutadapt_out.2.fastq Hv_Int_5kbMP_CGATGT_L003_R1_001.fastq.gz Hv_Int_5kbMP_CGATGT_L003_R2_001.fastq.gz -q 30 -u -10 -U -10
