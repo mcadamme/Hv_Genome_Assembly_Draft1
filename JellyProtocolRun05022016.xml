@@ -1,0 +1,29 @@
+<jellyProtocol>
+    <reference>/home/megan/jelly_05022016/with_InterScaffold/Run1/unmasked_Stripped_K63_over2000bp_2_ref.fasta</reference>  
+    <outputDir>/home/megan/jelly_05022016/with_InterScaffold/Run1/jelly_output</outputDir>
+    <blasr>-minMatch 8 -sdpTupleSize 8 -minPctIdentity 75 -bestn 1 -nCandidates 10 -maxScore -500 -nproc 8 -noSplitSubreads</blasr>
+    <input baseDir="/home/megan/jelly_05022016/with_InterScaffold/Run1/">
+        <job>filtered.Hv_PacBio_cell01.fastq</job>
+	<job>filtered.Hv_PacBio_cell02.fastq</job>
+	<job>filtered.Hv_PacBio_cell03.fastq</job>
+	<job>filtered.Hv_PacBio_cell04.fastq</job>
+	<job>filtered.Hv_PacBio_cell05.fastq</job>
+	<job>filtered.Hv_PacBio_cell06.fastq</job>
+	<job>filtered.Hv_PacBio_cell07.fastq</job>
+	<job>filtered.Hv_PacBio_cell08.fastq</job>
+	<job>filtered.Hv_PacBio_cell09.fastq</job>
+	<job>filtered.Hv_PacBio_cell10.fastq</job>
+	<job>filtered.Hv_PacBio_cell11.fastq</job>
+	<job>filtered.Hv_PacBio_cell12.fastq</job>
+	<job>filtered.Hv_PacBio_cell13.fastq</job>
+	<job>filtered.Hv_PacBio_cell14.fastq</job>
+	<job>filtered.Hv_PacBio_cell15.fastq</job>
+	<job>filtered.Hv_PacBio_cell16.fastq</job>
+	<job>filtered.Hv_PacBio_cell17.fastq</job>
+	<job>filtered.Hv_PacBio_cell18.fastq</job>
+	<job>filtered.Hv_PacBio_cell19.fastq</job>
+	<job>filtered.Hv_PacBio_cell20.fastq</job>
+	<job>filtered.Hv_PacBio_cell21.fastq</job>
+	<job>filtered.Hv_PacBio_cell22.fastq</job>
+    </input>
+</jellyProtocol>

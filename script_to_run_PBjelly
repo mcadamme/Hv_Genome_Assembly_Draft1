@@ -1,0 +1,28 @@
+#script to run PBjelly allowing scaffolds to be joined.
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py setup /home/megan/jelly_05022016/with_InterScaffold/Run1/JellyProtocolRun05022016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py mapping /home/megan/jelly_05022016/with_InterScaffold/Run1/JellyProtocolRun05022016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py support /home/megan/jelly_05022016/with_InterScaffold/Run1/JellyProtocolRun05022016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py extraction /home/megan/jelly_05022016/with_InterScaffold/Run1/JellyProtocolRun05022016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py assembly /home/megan/jelly_05022016/with_InterScaffold/Run1/JellyProtocolRun05022016.xml -x "--nproc=10"
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py output /home/megan/jelly_05022016/with_InterScaffold/Run1/JellyProtocolRun05022016.xml
+
+#not allowing scaffolds to be joined, just filling captured gaps.
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py setup /home/megan/jelly_05022016/without_InterScaffold/JellyProtocolRun05062016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py mapping /home/megan/jelly_05022016/without_InterScaffold/JellyProtocolRun05062016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py support /home/megan/jelly_05022016/without_InterScaffold/JellyProtocolRun05062016.xml -x  "--capturedOnly"
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py extraction /home/megan/jelly_05022016/without_InterScaffold/JellyProtocolRun05062016.xml
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py assembly /home/megan/jelly_05022016/without_InterScaffold/JellyProtocolRun05062016.xml -x "--nproc=10"
+
+python /home/megan/src/PBSuite_14.9.9/bin/Jelly.py output /home/megan/jelly_05022016/without_InterScaffold/JellyProtocolRun05062016.xml
+
